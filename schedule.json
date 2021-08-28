@@ -1,0 +1,77 @@
+{
+    "students": [
+        {
+        	"email" : "k.a.ahmed@eagle.clarion.edu",
+        	"name": "Kareem Felfel",
+        	"schedule":[
+        		{
+            		"day": "Monday",
+        			"start": "12:00 PM",
+        			"end": "5:30 PM"
+        		},
+        		{
+            		"day": "Tuesday",
+        			"start": "11:00 AM",
+        			"end": "12:00 PM"
+        		},
+        		{
+            		"day": "Wednesday",
+        			"start": "12:00 PM",
+        			"end": "2:00 PM"
+        		},
+        		{
+            		"day": "Thursday",
+        			"start": "3:15 PM",
+        			"end": "4:15 PM"
+        		},
+        		{
+            		"day": "Friday",
+        			"start": "12:00 PM",
+        			"end": "5:00 PM"
+        		}
+        	]
+        },
+        {
+            "email": "c.m.hankey1@eagle.clarion.edu",
+            "name": "Camden Hankey",
+            "schedule": [
+                {
+                    "day": "Monday",
+                    "start": "12:00 PM",
+                    "end": "2:00 PM"
+                    
+                },
+                {
+                    "day": "Monday",
+                    "start": "3:30 PM",
+                    "end": "5:00 PM"
+                    
+                },
+                {
+                    "day": "Wednesday",
+                    "start": "9:00 AM",
+                    "end": "10:00 AM"
+                    
+                },
+                {
+                    "day": "Wednesday",
+                    "start": "11:00 AM",
+                    "end": "2:00 PM"
+                    
+                },
+                {
+                    "day": "Friday",
+                    "start": "9:00 AM",
+                    "end": "10:00 AM"
+                    
+                },
+                {
+                    "day": "Friday",
+                    "start": "11:00 AM",
+                    "end": "5:00 PM"
+                    
+                }
+            ]
+        }
+	]
+}
