@@ -7,6 +7,7 @@ where: for every user, their schedule corresponds with a date and a start/end ti
 - For example, for a user that works every Monday from x -> z:
 	- A report is generated for every monday in the calendar from the entered start date in ``` data.json ``` to the entered end date in ``` data.json ```
 	- Holidays from ``` holidays.json ``` are ignored in the scheduled (not added)
+- Finally the generator makes a report on each user stating the day and shift where the employee was late, did not report to work, or left early.
 
 ## Useage:
 - Clone repository.
