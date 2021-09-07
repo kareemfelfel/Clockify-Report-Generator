@@ -157,8 +157,6 @@ def analyzeData(response, schedule):
                 
     return reports
 
-def sameDates(start, expectedStart):
-    return start.date() == expectedStart.date()
 def getData():
     dataFile = open("data.json",)
     jsonFile = json.load(dataFile)
