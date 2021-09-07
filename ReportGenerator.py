@@ -127,20 +127,38 @@ def analyzeData(response, schedule):
                 if(item["userEmail"].lower() == email.lower()):
                     startDate = datetime.strptime(item["timeInterval"]["start"].replace("-04:00", ""), "%Y-%m-%dT%H:%M:%S")
                     endDate = datetime.strptime(item["timeInterval"]["end"].replace("-04:00", ""), "%Y-%m-%dT%H:%M:%S")
-                    #Check if shift is at most started 30 mins after it is supposed to
-                    # if the shift started 30 mins or more after it was supposed to, keep looking for that shift
-                    # if the shift is not found, then the shift was not made
-                    if startDate.date() == expectedStartDate.date() and ((startDate - expectedStartDate).seconds / 60) <= 30:
-                        if ((expectedStartDate < startDate) and (startDate - expectedStartDate).seconds / 60) > 5: # if came 5 minutes or more late
-                            reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was done " + str((startDate - expectedStartDate).seconds / 60) + " minutes late")
-                        if ((expectedEndDate > endDate) and (expectedEndDate - endDate).seconds / 60) > 5: # if left 5 minutes or more early
-                            reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was left " + str((expectedEndDate - endDate).seconds / 60) + " minutes early")
-                        break
+                    #If start date and expected start date are the same
+                    if startDate.date() == expectedStartDate.date():
+                        # If the expected Clock in and expected Clock out is between the clocked in and clocked out period --> Break
+                        # this means that the shift started either on or before the expected start date and ended either on or before
+                        # the expected end date.
+                        if expectedStartDate >= startDate:
+                            if expectedEndDate <= endDate:
+                                break
+                            # If this is the right shift (meaning the expectedStartDate must be less than or equal to endDate) since
+                            # we already assumed that it is okay to start the shift early, but if it did start early we must make sure that
+                            # it is the right shift and not a previous shift
+                            elif expectedStartDate <= endDate and ((expectedEndDate - endDate).seconds / 60) > 5:
+                                reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was left " + str((expectedEndDate - endDate).seconds / 60) + " minutes early")
+                                break
+                        #Check if shift is at most started 30 mins after it is supposed to
+                        # if the shift started 30 mins or more after it was supposed to, keep looking for that shift
+                        # if the shift is not found, then the shift was not made
+                        if ((startDate - expectedStartDate).seconds / 60) <= 30:
+                            if ((expectedStartDate < startDate) and (startDate - expectedStartDate).seconds / 60) > 5: # if came 5 minutes or more late
+                                reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was started " + str((startDate - expectedStartDate).seconds / 60) + " minutes late")
+                            if ((expectedEndDate > endDate) and (expectedEndDate - endDate).seconds / 60) > 5: # if left 5 minutes or more early
+                                reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was left " + str((expectedEndDate - endDate).seconds / 60) + " minutes early")
+                            break
+                            
 
                 if i == len(responseData) -1:
                     reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was not made.") 
                 
     return reports
+
+def sameDates(start, expectedStart):
+    return start.date() == expectedStart.date()
 def getData():
     dataFile = open("data.json",)
     jsonFile = json.load(dataFile)
