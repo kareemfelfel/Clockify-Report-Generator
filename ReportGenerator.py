@@ -93,7 +93,7 @@ def main():
     response = getResponse(data)
     expectedSchedule = getExpectedSchedule(holidays, data, schedule)
     print("Analyzing data...")
-    reports = analyzeData(response, expectedSchedule)
+    reports = analyzeData(response, expectedSchedule, data["timeMarginOfError"])
     if len(reports) > 0:
         for report in reports:
             print(report)
@@ -112,7 +112,7 @@ def updateDays(schedule):
                 raise Exception("Please make sure that days in the schedule are spelled correctly.")
     return schedule
                 
-def analyzeData(response, schedule):
+def analyzeData(response, schedule, marginOfError):
     reports = []
     responseData = response["timeentries"]
     studentsList = schedule["students"]
@@ -133,21 +133,24 @@ def analyzeData(response, schedule):
                         # this means that the shift started either on or before the expected start date and ended either on or before
                         # the expected end date.
                         if expectedStartDate >= startDate:
-                            if expectedEndDate <= endDate:
+                            # If the shift was done on time, or after it was supposed to be done, or less than the margin of error in minutes,
+                            # Count it as a shift that is made on time
+                            if expectedEndDate <= endDate or (expectedStartDate <= endDate and ((expectedEndDate - endDate).seconds / 60) < marginOfError):
                                 break
                             # If this is the right shift (meaning the expectedStartDate must be less than or equal to endDate) since
                             # we already assumed that it is okay to start the shift early, but if it did start early we must make sure that
                             # it is the right shift and not a previous shift
-                            elif expectedStartDate <= endDate and ((expectedEndDate - endDate).seconds / 60) > 5:
+                            elif expectedStartDate <= endDate and ((expectedEndDate - endDate).seconds / 60) >= marginOfError:
                                 reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was left " + str((expectedEndDate - endDate).seconds / 60) + " minutes early")
                                 break
                         #Check if shift is at most started 30 mins after it is supposed to
                         # if the shift started 30 mins or more after it was supposed to, keep looking for that shift
                         # if the shift is not found, then the shift was not made
+                        # NOTE THAT 30 MINUTES IS THE MAXIMUM TIME GAP BETWEEN 2 SHIFTS.
                         if ((startDate - expectedStartDate).seconds / 60) <= 30:
-                            if ((expectedStartDate < startDate) and (startDate - expectedStartDate).seconds / 60) > 5: # if came 5 minutes or more late
+                            if ((expectedStartDate < startDate) and (startDate - expectedStartDate).seconds / 60) >= marginOfError: # if came later than margin of error in minutes or more late
                                 reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was started " + str((startDate - expectedStartDate).seconds / 60) + " minutes late")
-                            if ((expectedEndDate > endDate) and (expectedEndDate - endDate).seconds / 60) > 5: # if left 5 minutes or more early
+                            if ((expectedEndDate > endDate) and (expectedEndDate - endDate).seconds / 60) >= marginOfError: # if left 5 minutes or more early
                                 reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was left " + str((expectedEndDate - endDate).seconds / 60) + " minutes early")
                             break
                             

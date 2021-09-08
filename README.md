@@ -25,6 +25,8 @@ where: for every user, their schedule corresponds with a date and a start/end ti
 	- All days must be typed as week days: Monday, Tuesday, etc.
 	- start and end must be in this format: 11:00 AM
 	- email must correspond to the same email that the user uses on Clockify
+- ```timeMarginOfError``` is the free time measured in minutes that you give to the employees so they have time to log in to clockify or if they are late for any possible reason.
+This time can account for errors, technology lags, etc.
 
 ## holidays.json:
 - contains all holidays as objects in holidays array.

@@ -2,5 +2,6 @@
     "workspaceID": "6064b7754461b74c37843c48",
 	"key": "MTU3YzEzZDItNTM5My00ZjllLTlkNTktYzA2NjExMjRiYWM4",
 	"startDate": "2021-08-23",
-	"endDate": "2021-08-30"
+	"endDate": "2021-08-30",
+	"timeMarginOfError": 1
 }
