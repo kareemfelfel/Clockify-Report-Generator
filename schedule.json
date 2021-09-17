@@ -5,29 +5,9 @@
         	"name": "Kareem Felfel",
         	"schedule":[
         		{
-            		"day": "Monday",
-        			"start": "12:00 PM",
-        			"end": "5:30 PM"
-        		},
-        		{
             		"day": "Tuesday",
-        			"start": "11:00 AM",
-        			"end": "12:00 PM"
-        		},
-        		{
-            		"day": "Wednesday",
-        			"start": "12:00 PM",
-        			"end": "2:00 PM"
-        		},
-        		{
-            		"day": "Thursday",
         			"start": "3:15 PM",
         			"end": "4:15 PM"
-        		},
-        		{
-            		"day": "Friday",
-        			"start": "12:00 PM",
-        			"end": "5:00 PM"
         		}
         	]
         },
@@ -37,14 +17,14 @@
             "schedule": [
                 {
                     "day": "Monday",
-                    "start": "12:00 PM",
-                    "end": "2:00 PM"
+                    "start": "9:00 AM",
+                    "end": "10:00 AM"
                     
                 },
                 {
                     "day": "Monday",
-                    "start": "3:30 PM",
-                    "end": "5:00 PM"
+                    "start": "11:00 AM",
+                    "end": "1:00 PM"
                     
                 },
                 {
@@ -56,7 +36,7 @@
                 {
                     "day": "Wednesday",
                     "start": "11:00 AM",
-                    "end": "2:00 PM"
+                    "end": "1:00 PM"
                     
                 },
                 {
@@ -68,10 +48,186 @@
                 {
                     "day": "Friday",
                     "start": "11:00 AM",
-                    "end": "5:00 PM"
+                    "end": "1:00 PM"
                     
                 }
             ]
-        }
+        },
+		{
+				"email": "a.schroeder@eagle.clarion.edu",
+				"name": "Abbeigh Schroeder",
+				"schedule": [
+				{
+					"day": "Monday",
+					"start": "8:55 AM",
+					"end": "9:55 AM"
+				},
+				{
+					"day": "Tuesday",
+					"start": "12:55 PM",
+					"end": "1:55 PM"
+				},
+				{
+					"day": "Wednesday",
+					"start": "8:55 AM",
+					"end": "10:55 AM"
+				},
+				{
+					"day": "Thursday",
+					"start": "12:55 PM",
+					"end": "1:55 PM"
+				},
+				{
+					"day": "Friday",
+					"start": "9:55 AM",
+					"end": "10:55 AM"
+				}
+			]
+		},
+		{
+				"email": "a.e.johns@eagle.clarion.edu",
+				"name": "Anna Johns",
+				"schedule": [
+				{
+					"day": "Tuesday",
+					"start": "11:55 AM",
+					"end": "12:55 PM"
+				},
+				{
+					"day": "Tuesday",
+					"start": "3:55 PM",
+					"end": "4:55 PM"
+				},
+				{
+					"day": "Thursday",
+					"start": "11:55 AM",
+					"end": "12:55 PM"
+				},
+				{
+					"day": "Thursday",
+					"start": "3:55 PM",
+					"end": "4:55 PM"
+				},
+				{
+					"day": "Friday",
+					"start": "11:55 AM",
+					"end": "1:55 PM"
+				}
+			]
+		},
+		{
+				"email": "d.k.granda@eagle.clarion.edu",
+				"name": "Donald K Granda III",
+				"schedule": [
+				{
+					"day": "Monday",
+					"start": "10:55 AM",
+					"end": "12:55 PM"
+				},
+				{
+					"day": "Tuesday",
+					"start": "10:55 AM",
+					"end": "11:55 AM"
+				},
+				{
+					"day": "Wednesday",
+					"start": "10:55 AM",
+					"end": "12:55 PM"
+				},
+				{
+					"day": "Thursday",
+					"start": "10:55 AM",
+					"end": "11:55 AM"
+				}
+			]
+		},
+		{
+				"email": "g.l.lipscomb@eagle.clarion.edu",
+				"name": "Grace Lipscomb",
+				"schedule": [
+				{
+					"day": "Monday",
+					"start": "12:55 PM",
+					"end": "2:55 PM"
+				},
+				{
+					"day": "Tuesday",
+					"start": "8:55 AM",
+					"end": "9:55 AM"
+				},
+				{
+					"day": "Wednesday",
+					"start": "12:55 PM",
+					"end": "2:55 PM"
+				},
+				{
+					"day": "Friday",
+					"start": "8:55 AM",
+					"end": "9:55 AM"
+				}
+			]
+		},
+		{
+				"email": "m.p.bastecki@eagle.clarion.edu",
+				"name": "Martin Bastecki",
+				"schedule": [
+				{
+					"day": "Monday",
+					"start": "9:55 AM",
+					"end": "10:55 AM"
+				},
+				{
+					"day": "Monday",
+					"start": "2:55 PM",
+					"end": "4:55 PM"
+				},
+				{
+					"day": "Tuesday",
+					"start": "3:25 PM",
+					"end": "3:55 PM"
+				},
+				{
+					"day": "Wednesday",
+					"start": "2:55 PM",
+					"end": "4:55 PM"
+				},
+				{
+					"day": "Thursday",
+					"start": "3:25 PM",
+					"end": "3:55 PM"
+				}
+			]
+		},
+		{
+				"email": "t.b.wohnsiedler@eagle.clarion.edu",
+				"name": "Tom Wohnsiedler",
+				"schedule": [
+				{
+					"day": "Tuesday",
+					"start": "9:55 AM",
+					"end": "10:55 AM"
+				},
+				{
+					"day": "Tuesday",
+					"start": "1:55 PM",
+					"end": "3:25 PM"
+				},
+				{
+					"day": "Thursday",
+					"start": "8:55 AM",
+					"end": "10:55 AM"
+				},
+				{
+					"day": "Thursday",
+					"start": "1:55 PM",
+					"end": "3:25 PM"
+				},
+				{
+					"day": "Friday",
+					"start": "10:55 AM",
+					"end": "11:55 AM"
+				}
+			]
+		}
 	]
 }

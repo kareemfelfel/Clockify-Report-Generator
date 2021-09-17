@@ -7,7 +7,11 @@ Created on Mon Aug 23 20:23:12 2021
 import requests
 import json
 from datetime import date, timedelta, datetime
+from fpdf import FPDF
 import calendar
+import matplotlib.pyplot as plt
+from os.path import isfile
+import os
 
 def getExpectedSchedule(holidays, data, schedule):
     sDateHolder = [int(i) for i in data["startDate"].split('-')]
@@ -94,13 +98,101 @@ def main():
     expectedSchedule = getExpectedSchedule(holidays, data, schedule)
     print("Analyzing data...")
     reports = analyzeData(response, expectedSchedule, data["timeMarginOfError"])
-    if len(reports) > 0:
-        for report in reports:
-            print(report)
+    for obj in reports:
+        if len(obj["report"]) > 0:
+            for report in obj["report"]:
+                print(report)
+    export = input("Would you like to have the PDF report exported to reports directory? (y/n)")
+    if export.lower() == "y":
+        #The name of the PDF file that will be saved
+        fileName = 'report-from ' + data["startDate"] + ' to ' + data["endDate"]
+        exportReport(reports, fileName, data)
     else:
-        print("All time entries are verified for FSR and LAB workers.")
+        exit()
+    
+def exportReport(reports, fileName, data):  
+    path = 'Reports/' + fileName + '.pdf'
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font('Times', '', 9)
+    pdf.cell(1,1, 'From ' + data["startDate"] + ' to ' + data["endDate"] )
+    pdf.ln(5)
+    pdf.set_font('Times', 'B', 14)
+    # Header title
+    title = 'Reports For Lab & FSR Students'
+    # Calculate width of title and position
+    w = pdf.get_string_width(title) + 6
+    pdf.set_x((210 - w) / 2)
+    # Colors of frame, background and text
+    pdf.set_draw_color(0, 80, 180)
+    pdf.set_fill_color(250, 250, 250)
+    pdf.set_text_color(220, 50, 50)
+    # Thickness of frame (1 mm)
+    pdf.set_line_width(1)
+    # Title
+    pdf.cell(w, 9, title, 1, 1, 'C', 1)
+    # Line break
+    pdf.ln(20)
+    
+    #Body for first student report:
+    pdf.set_text_color(0, 0, 0)
+    for student in reports:
+        pdf.set_font('Times', 'B', 12)
+        pdf.cell(40, 10, student["name"] + " (" + student["email"] + "):")
+        # Line break
+        pdf.ln(10)
+        
+        #plot image
+        labels = 'Shifts Made on Time', 'Shifts Missed', 'Shifts Started Late', 'Shifts Left Early'
+        sizes = [student["shiftsOnTime"], student["shiftsMissed"], student["shiftsStartedLate"], student["shiftsLeftEarly"]]
+        colors = ['#00b300','#df4759', '#ffc107', '#FFA500']
+        explode = (0, 0, 0, 0)  # only "explode" the 1st slice (i.e. 'shifts on time')
+        
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(sizes, colors = colors, explode=explode, autopct=lambda p: '{:.1f}% ({:.0f})'.format(p,(p/100)*student["totalShifts"]),
+        shadow=True, startangle=90)
+        plt.legend(labels = labels)
+        
+        centre_circle = plt.Circle((0,0),0.70,fc='white')
+        fig = plt.gcf()
+        fig.gca().add_artist(centre_circle)
+        
+        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        plt.tight_layout()
+        #name of the plot image
+        filePath = 'Assets/Charts/' + student["email"] + '-' + str(datetime.today().strftime('%Y-%m-%d')) + '.png'
+        plt.savefig(filePath)
+        
+        
+        #wait for it to finish
+        while True:
+            if isfile( filePath ): # Check if file exists
+                break
+        #time.sleep(5)
+        #Grab the saved image and add it to the pdf
+        pdf.cell(40)
+        pdf.image(filePath, w= 95, h=65)
+        
+        #Body
+        pdf.set_font('Times', '', 12)
+        for data in student["report"]:
+            pdf.ln(10)
+            pdf.cell(5)
+            pdf.cell(5, 5, '- ' + data)
+    
+        
+        #remove the created file
+        os.remove(filePath)
+        # Line break
+        pdf.ln(15)
     
     
+    #pdf.cell(60)
+    # pdf.cell(40, 10, 'Reports For Lab & FSR Students')
+    pdf.output(path, 'F')
+    return
+
 def updateDays(schedule):
      #keep these as English reference to week days
     week_days=["monday","tuesday","wednesday","thursday","friday","saturday","sunday"]
@@ -119,7 +211,13 @@ def analyzeData(response, schedule, marginOfError):
     for student in studentsList:
         email = student["email"]
         name = student["name"]
+        shiftsMissed = 0
+        shiftsLeftEarly = 0
+        shiftsStartedLate = 0
+        totalShifts = 0
+        studentReport = []
         for entry in student["schedule"]:
+            totalShifts += 1
             expectedStartDate = datetime.strptime(entry["start"], "%Y-%m-%dT%H:%M:%S")
             expectedEndDate = datetime.strptime(entry["end"], "%Y-%m-%dT%H:%M:%S")
             
@@ -141,7 +239,8 @@ def analyzeData(response, schedule, marginOfError):
                             # we already assumed that it is okay to start the shift early, but if it did start early we must make sure that
                             # it is the right shift and not a previous shift
                             elif expectedStartDate <= endDate and ((expectedEndDate - endDate).seconds / 60) >= marginOfError:
-                                reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was left " + str((expectedEndDate - endDate).seconds / 60) + " minutes early")
+                                shiftsLeftEarly +=1
+                                studentReport.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was left " + str(round((expectedEndDate - endDate).seconds / 60, 3)) + " minutes early")
                                 break
                         #Check if shift is at most started 30 mins after it is supposed to
                         # if the shift started 30 mins or more after it was supposed to, keep looking for that shift
@@ -149,14 +248,30 @@ def analyzeData(response, schedule, marginOfError):
                         # NOTE THAT 30 MINUTES IS THE MAXIMUM TIME GAP BETWEEN 2 SHIFTS.
                         if ((startDate - expectedStartDate).seconds / 60) <= 30:
                             if ((expectedStartDate < startDate) and (startDate - expectedStartDate).seconds / 60) >= marginOfError: # if came later than margin of error in minutes or more late
-                                reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was started " + str((startDate - expectedStartDate).seconds / 60) + " minutes late")
+                                shiftsStartedLate += 1
+                                studentReport.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was started " + str(round((startDate - expectedStartDate).seconds / 60, 3)) + " minutes late")
                             if ((expectedEndDate > endDate) and (expectedEndDate - endDate).seconds / 60) >= marginOfError: # if left 5 minutes or more early
-                                reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was left " + str((expectedEndDate - endDate).seconds / 60) + " minutes early")
+                                shiftsLeftEarly += 1
+                                studentReport.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was left " + str(round((expectedEndDate - endDate).seconds / 60, 3)) + " minutes early")
                             break
                             
 
                 if i == len(responseData) -1:
-                    reports.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was not made.") 
+                    shiftsMissed +=1
+                    studentReport.append(name + ": This shift on " + str(expectedStartDate.ctime()) + " was not made.") 
+                    
+        #Put everything together in one object and push that object to the reports array
+        obj = {
+                "name": name,
+                "email": email,
+                "shiftsOnTime": totalShifts - (shiftsMissed + shiftsLeftEarly + shiftsStartedLate),
+                "shiftsMissed": shiftsMissed,
+                "shiftsLeftEarly": shiftsLeftEarly,
+                "shiftsStartedLate": shiftsStartedLate,
+                "totalShifts": totalShifts,
+                "report" : studentReport
+        }
+        reports.append(obj)
                 
     return reports
 
