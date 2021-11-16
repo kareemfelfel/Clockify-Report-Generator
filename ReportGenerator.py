@@ -223,8 +223,9 @@ def analyzeData(response, schedule, marginOfError):
             
             for i, item in enumerate(responseData):
                 if(item["userEmail"].lower() == email.lower()):
-                    startDate = datetime.strptime(item["timeInterval"]["start"].replace("-04:00", ""), "%Y-%m-%dT%H:%M:%S")
-                    endDate = datetime.strptime(item["timeInterval"]["end"].replace("-04:00", ""), "%Y-%m-%dT%H:%M:%S")
+                    # Replacing both -04.00 and -05.00 for daylight saving changes
+                    startDate = datetime.strptime(item["timeInterval"]["start"].replace("-04:00", "").replace("-05:00", ""), "%Y-%m-%dT%H:%M:%S")
+                    endDate = datetime.strptime(item["timeInterval"]["end"].replace("-04:00", "").replace("-05:00", ""), "%Y-%m-%dT%H:%M:%S")
                     #If start date and expected start date are the same
                     if startDate.date() == expectedStartDate.date():
                         # If the expected Clock in and expected Clock out is between the clocked in and clocked out period --> Break
